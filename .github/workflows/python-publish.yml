@@ -1,0 +1,26 @@
+name: Upload Python Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install requests beautifulsoup4
+    - name: Build package
+      env:
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+        TRUECAPTCHA_USERID: ${{ secrets.TRUECAPTCHA_USERID }}
+        TRUECAPTCHA_APIKEY: ${{ secrets.TRUECAPTCHA_APIKEY }}
+        MAILPARSER_DOWNLOAD_URL_ID: ${{ secrets.MAILPARSER_DOWNLOAD_URL_ID }}
+      run: python3 main.py
