@@ -1,35 +1,5 @@
 #!/usr/bin/env python3
 
-#
-# SPDX-FileCopyrightText: (c) 2020-2021 CokeMine & Its repository contributors
-# SPDX-FileCopyrightText: (c) 2021 A beam of light
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-#
-
-"""
-euserv auto-renew script
-
-ChangeLog
-
-v2021.09.30
-- Captcha automatic recognition using TrueCaptcha API
-- Email notification
-- Add login failure retry mechanism
-- reformat log info
-
-v2021.11.06
-- Receive renew PIN(6-digits) using mailparser parsed data download url
-  workflow: auto-forward your EUserv PIN email to your mailparser inbox 
-  -> parsing PIN via mailparser -> get PIN from mailparser
-- Update kc2_security_password_get_token request
-
-v2021.11.26
-- Adjust TrueCaptcha constraint parameters for high availability.
-  Plus, the CAPTCHA of EUserv is currently case-insensitive, so the above adjustment works.
-
-"""
-
 import os
 import re
 import json
@@ -48,16 +18,6 @@ from bs4 import BeautifulSoup
 USERNAME = os.environ["USERNAME"]  # 用户名或邮箱
 PASSWORD = os.environ["PASSWORD"]  # 密码
 
-# default value is TrueCaptcha demo credential,
-# you can use your own credential via set environment variables:
-# TRUECAPTCHA_USERID and TRUECAPTCHA_APIKEY
-# demo: https://apitruecaptcha.org/demo
-# demo2: https://apitruecaptcha.org/demo2
-# demo apikey also has a limit of 100 times per day
-# {
-# 'error': '101.0 above free usage limit 100 per day and no balance',
-# 'requestId': '7690c065-70e0-4757-839b-5fd8381e65c7'
-# }
 TRUECAPTCHA_USERID = os.environ.get("TRUECAPTCHA_USERID", "arun56")
 TRUECAPTCHA_APIKEY = os.environ.get("TRUECAPTCHA_APIKEY", "wMjXmBIcHcdYqO2RrsVN")
 
@@ -69,8 +29,8 @@ MAILPARSER_DOWNLOAD_URL_ID = os.environ["MAILPARSER_DOWNLOAD_URL_ID"]
 MAILPARSER_DOWNLOAD_BASE_URL = "https://files.mailparser.io/d/"
 
 # Telegram Bot Push https://core.telegram.org/bots/api#authorizing-your-bot
-TG_BOT_TOKEN = ""  # 通过 @BotFather 申请获得，示例：1077xxx4424:AAFjv0FcqxxxxxxgEMGfi22B4yh15R5uw
-TG_USER_ID = ""  # 用户、群组或频道 ID，示例：129xxx206
+TG_BOT_TOKEN = os.environ["TG_BOT_TOKEN"]  # 通过 @BotFather 申请获得，示例：1077xxx4424:AAFjv0FcqxxxxxxgEMGfi22B4yh15R5uw
+TG_USER_ID = os.environ["TG_USER_ID"]  # 用户、群组或频道 ID，示例：129xxx206
 TG_API_HOST = "https://api.telegram.org"  # 自建 API 反代地址，供网络环境无法访问时使用，网络正常则保持默认
 
 # Email notification
